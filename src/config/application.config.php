@@ -9,6 +9,8 @@ return array(
     'modules' => array(
         'Application',
         'Administrativo',
+        'DoctrineModule',
+        'DoctrineORMModule'
     ),
     'module_listener_options' => array(
         'module_paths' => array(
