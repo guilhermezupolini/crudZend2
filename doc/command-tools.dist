@@ -1,0 +1,15 @@
+
+# Gerar as Entidades
+docker exec -it php php public/index.php orm:convert-mapping --namespace="Application\Entity\\" --force --from-database annotation module/Application/src/
+
+# Gerar Getters/Setters
+docker exec -it php php public/index.php orm:generate-entities  module/Application/src/ --generate-annotations=true
+
+# Gerar Modulo
+docker exec -it php php public/index.php create module <nome_modulo>
+
+# Gerar Controller
+docker exec -it php php public/index.php create controller <nome_controller> <nome_modulo>
+
+# Gerar Action (gera também as views)
+docker exec -it php php public/index.php create action <nome_action> <nome_controller> <Nome_modulo>
