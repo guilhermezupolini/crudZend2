@@ -1,14 +1,14 @@
 <?php
 
-namespace Administrativo\Model;
+namespace Application\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Curso
  *
- * @ORM\Entity()
- * @ORM\Table(name="desafio-zf.tb_curso")
+ * @ORM\Entity
+ * @ORM\Table(name="tb_curso")
  */
 class Curso
 {
