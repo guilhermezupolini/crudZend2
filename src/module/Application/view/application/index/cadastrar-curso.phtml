@@ -1,0 +1,76 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: guilherme.zupolini
+ * Date: 22/06/2017
+ * Time: 12:13
+ */
+
+echo $this->teste;
+$form = $this->form;
+?>
+
+<fieldset>
+    <?php echo $this->form()->openTag($form);?>
+
+    <legend>Cadastrar Curso</legend>
+
+    <div class="row">
+        <div class="col-xs-6 col-md-6 form-group">
+            <?php echo $this->formLabel($form->get("nmCurso"));?>
+            <?php echo $this->formInput($form->get("nmCurso"));?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-3 col-md-3 form-group">
+            <?php echo $this->formLabel($form->get("sgCurso"));?>
+            <?php echo $this->formInput($form->get("sgCurso"));?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-2 col-md-2 form-group">
+            <?php echo $this->formLabel($form->get("nuCargaHorario"));?>
+            <?php echo $this->formInput($form->get("nuCargaHorario"));?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 col-xs-4 form-group">
+            <button type="button" id="btnCancelar" class="btn btn-default">Cancelar</button>
+            <button type="button" id="btnSalvar" class="btn btn-primary">Salvar</button>
+        </div>
+    </div>
+
+    <?php echo $this->form()->closeTag();?>
+</fieldset>
+
+<script>
+    $(document).ready(function () {
+        $('#nuCargaHorario').mask("9999");
+
+        $('#btnCancelar').on('click', function () {
+           window.location.assign('/application/index/consultar-curso');
+        });
+
+        $('#btnSalvar').on('click', function () {
+            if(validaCamposObrigatorios(['input'])){
+                $.ajax({
+                    url: "/application/index/salvar-curso",
+                    datatype: "JSON",
+                    type: "POST",
+                    data: $('form').serialize(),
+                    success: function (data) {
+                        var retorno = JSON.parse(data);
+                        voltarTopo();
+                        alertMessage(retorno.msg, retorno.status, '#alertMsg');
+                    }
+                });
+            }else{
+                voltarTopo();
+                alertMessage('Preencha o(s) campo(s) obrigatório(s)', 'erro', '#alertMsg');
+            }
+        });
+    });
+</script>

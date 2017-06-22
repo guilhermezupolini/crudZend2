@@ -9,8 +9,11 @@
 
 namespace Application;
 
+use Application\Service\CursoService;
+use Zend\Json\Server\Smd\Service;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
+use Zend\ServiceManager\ServiceManager;
 
 class Module
 {
@@ -36,4 +39,14 @@ class Module
             ),
         );
     }
+
+//    public function getServiceConfig(){
+//        return array(
+//            'factories' => array(
+//                "CursoService" => function(ServiceManager $serviceManager){
+//                    return new CursoService($serviceManager, $GLOBALS['entityManager']);
+//                }
+//            ),
+//        );
+//    }
 }

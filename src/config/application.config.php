@@ -1,6 +1,6 @@
 <?php
 return array(
-    'modules'                 => array(
+    'modules' => array(
         'Application',
         'DoctrineModule',
         'DoctrineORMModule',
