@@ -10,6 +10,7 @@
 namespace Application;
 
 use Application\Service\CursoService;
+use Doctrine\ORM\EntityManager;
 use Zend\Json\Server\Smd\Service;
 use Zend\Mvc\ModuleRouteListener;
 use Zend\Mvc\MvcEvent;
@@ -40,13 +41,14 @@ class Module
         );
     }
 
-//    public function getServiceConfig(){
-//        return array(
-//            'factories' => array(
-//                "CursoService" => function(ServiceManager $serviceManager){
-//                    return new CursoService($serviceManager, $GLOBALS['entityManager']);
-//                }
-//            ),
-//        );
-//    }
+    public function getServiceConfig(){
+        return array(
+            'factories' => array(
+                "CursoService" => function(ServiceManager $serviceManager){
+                    $em = $serviceManager->get('Doctrine\ORM\EntityManager');
+                    return new CursoService($serviceManager, $em);
+                }
+            ),
+        );
+    }
 }

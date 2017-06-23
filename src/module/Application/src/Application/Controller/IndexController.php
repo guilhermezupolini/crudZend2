@@ -41,36 +41,39 @@ class IndexController extends AbstractActionController
         $request = $this->getRequest();
         $post = $request->getPost()->toArray();
 
-        if(!$post['idCurso']){
+        if($post){
             try{
 
                 $curso = new Curso();
+                $curso->getIdCurso($post['idCurso'] ? $post['idCurso'] : null);
                 $curso->setNoCurso($post['nmCurso']);
                 $curso->setSgCurso($post['sgCurso']);
                 $curso->setChCurso($post['nuCargaHorario']);
 
-                $cursoService = $this->getServiceLocator()->get("Application\Service\CursoService");
+                $cursoService = $this->getServiceLocator()->get("CursoService");
                 $cursoService->salvarCurso($curso);
 
-                $retorno = array('msg' => 'Dado(s) salvo com sucesso', 'status' => 'sucesso');
+                $msg = $post['idCurso'] ? "Dado(s) alterado(s) com sucesso !" : "Dado(s) salvo com sucesso !";
+
+                $retorno = array('msg' => $msg, 'status' => 'sucesso');
             }catch(Exception $e){
                 $retorno = array('msg' => 'Erro ao salvar o(s) dado(s)', 'status' => 'erro');
             }
         }else{
-            try{
-
-                $curso = new Curso();
-                $curso->setNoCurso($post['nmCurso']);
-                $curso->setSgCurso($post['sgCurso']);
-                $curso->setChCurso($post['nuCargaHorario']);
-
-                $cursoService = $this->getServiceLocator()->get("Application\Service\CursoService");
-                $cursoService->salvar($curso, $post['idCurso']);
-
-                $retorno = array('msg' => 'Dado(s) alterado(s) com sucesso', 'status' => 'sucesso');
-            }catch(Exception $e){
+//            try{
+//
+//                $curso = new Curso();
+//                $curso->setNoCurso($post['nmCurso']);
+//                $curso->setSgCurso($post['sgCurso']);
+//                $curso->setChCurso($post['nuCargaHorario']);
+//
+//                $cursoService = $this->getServiceLocator()->get("Application\Service\CursoService");
+//                $cursoService->salvar($curso, $post['idCurso']);
+//
+//                $retorno = array('msg' => 'Dado(s) alterado(s) com sucesso', 'status' => 'sucesso');
+//            }catch(Exception $e){
                 $retorno = array('msg' => 'Erro ao alterar o(s) dado(s)', 'status' => 'sucesso');
-            }
+//            }
         }
 
 

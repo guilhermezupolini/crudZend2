@@ -21,7 +21,7 @@ class CursoService
     protected $em;
     protected $sm;
 
-    function __construct(EntityManager $em, ServiceManager $sm)
+    function __construct(ServiceManager $sm, EntityManager $em)
     {
         $this->em = $em;
         $this->sm = $sm;
@@ -43,9 +43,9 @@ class CursoService
         return $this->getRepository()->findAll();
     }
 
-    public function salvarCurso($entity, $id = null){
-        if($id){
-            $entity = $this->getRepository()->findOneBy(array('idCurso' => $id));
+    public function salvarCurso($entity){
+        if($entity->getIdCurso()){
+            $entity = $this->getRepository()->findOneBy(array('idCurso' => $entity->getIdCurso()));
             $this->getEntityManager()->persist($entity);
             $this->getEntityManager()->flush();
         }else{
