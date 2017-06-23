@@ -24,7 +24,7 @@ class Curso
     /**
      * @ORM\Column(name="nm_curso", type="string", nullable=false)
      */
-    private $noCurso;
+    private $nmCurso;
 
 
     /**
@@ -35,7 +35,7 @@ class Curso
     /**
      * @ORM\Column(name="nu_carga_horario", type="integer", nullable=false)
      */
-    private $chCurso;
+    private $nuCargaHorario;
 
     public function getIdCurso()
     {
@@ -47,14 +47,14 @@ class Curso
         $this->idCurso = $idCurso;
     }
 
-    public function getNoCurso()
+    public function getNmCurso()
     {
-        return $this->noCurso;
+        return $this->nmCurso;
     }
 
-    public function setNoCurso($noCurso)
+    public function setNmCurso($nmCurso)
     {
-        $this->noCurso = $noCurso;
+        $this->nmCurso = $nmCurso;
     }
 
     public function getSgCurso()
@@ -67,14 +67,14 @@ class Curso
         $this->sgCurso = $sgCurso;
     }
 
-    public function getChCurso()
+    public function getNuCargaHorario()
     {
-        return $this->chCurso;
+        return $this->nuCargaHorario;
     }
 
-    public function setChCurso($chCurso)
+    public function setNuCargaHorario($nuCargaHorario)
     {
-        $this->chCurso = $chCurso;
+        $this->nuCargaHorario = $nuCargaHorario;
     }
 
 

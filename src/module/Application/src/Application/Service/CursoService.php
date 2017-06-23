@@ -9,8 +9,11 @@
 
 namespace Application\Service;
 
+use Application\Entity\Curso;
 use Doctrine\ORM\EntityManager;
 use Zend\ServiceManager\ServiceManager;
+use Zend\Stdlib\Hydrator\ArraySerializable;
+use Zend\Stdlib\Hydrator\ClassMethods;
 
 class CursoService
 {
@@ -43,12 +46,25 @@ class CursoService
         return $this->getRepository()->findAll();
     }
 
-    public function salvarCurso($entity){
-        if($entity->getIdCurso()){
-            $entity = $this->getRepository()->findOneBy(array('idCurso' => $entity->getIdCurso()));
-            $this->getEntityManager()->persist($entity);
+    public function buscarCurso($id){
+        return $this->getRepository()->findOneBy(array('idCurso' => $id));
+    }
+
+    public function buscarCursos($criterios){
+        return $this->getRepository()->findBy($criterios);
+    }
+
+    public function salvarCurso($data, $id = null){
+        $object = new Curso();
+        if($id){
+            $entity = $this->getRepository()->findOneBy(array('idCurso' => $id));
+            $hydrator = new ClassMethods();
+            $updateEntity = $hydrator->hydrate($data, $entity);
+            $this->getEntityManager()->persist($updateEntity);
             $this->getEntityManager()->flush();
         }else{
+            $hydrator = new ClassMethods();
+            $entity = $hydrator->hydrate($data, $object);
             $this->getEntityManager()->persist($entity);
             $this->getEntityManager()->flush();
         }

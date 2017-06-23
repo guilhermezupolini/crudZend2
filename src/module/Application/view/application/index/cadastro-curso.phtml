@@ -13,7 +13,11 @@ $form = $this->form;
 <fieldset>
     <?php echo $this->form()->openTag($form);?>
 
-    <legend>Cadastrar Curso</legend>
+    <legend><?php echo $this->tipo;?> Curso</legend>
+
+    <div class="row">
+        <?php echo $this->formInput($form->get("idCurso"))?>
+    </div>
 
     <div class="row">
         <div class="col-xs-6 col-md-6 form-group">
@@ -57,13 +61,16 @@ $form = $this->form;
         $('#btnSalvar').on('click', function () {
             if(validaCamposObrigatorios(['input'])){
                 $.ajax({
-                    url: "/application/index/salvar-curso",
+                    url: "salvar-curso",
                     datatype: "JSON",
                     type: "POST",
                     data: $('form').serialize(),
                     success: function (data) {
                         var retorno = JSON.parse(data);
                         voltarTopo();
+                        if(!$('#idCurso').val()){
+                            limparCampos();
+                        }
                         alertMessage(retorno.msg, retorno.status, '#alertMsg');
                     }
                 });

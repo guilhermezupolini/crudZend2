@@ -31,3 +31,10 @@ alertMessage = function (msg, tipo, painel) {
 voltarTopo = function () {
     $('html, body').animate({scrollTop:0}, 'slow'); //slow, medium, fast
 };
+
+limparCampos = function () {
+    var elemento = ['input'];
+  $('form ' + elemento).each(function () {
+      $(this).val("");
+  });
+};

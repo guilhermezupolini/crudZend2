@@ -6,4 +6,123 @@
  * Time: 13:17
  */
 
-echo $this->teste;
+$form = $this->form;
+?>
+
+<fieldset>
+    <?php echo $this->form()->openTag($form);?>
+    <legend>Consultar Cursos</legend>
+    <div class="row form-group">
+        <div class="col-md-6 col-xs-6">
+            <?php echo $this->formLabel($form->get("nmCurso"));?>
+            <?php echo $this->formInput($form->get("nmCurso"));?>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-2 col-xs-2">
+            <?php echo $this->formLabel($form->get("sgCurso"));?>
+            <?php echo $this->formInput($form->get("sgCurso"));?>
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col-md-6 col-xs-6">
+            <button type="button" class="btn btn-default" id="btnCadastrar">Cadastrar</button>
+            <button type="button" class="btn btn-default" id="btnLimpar">Limpar</button>
+            <button type="button" class="btn btn-primary" id="btnConsultar">Consultar</button>
+        </div>
+    </div>
+    <?php echo $this->form()->closeTag();?>
+</fieldset>
+
+<table id="tabelaConsulta">
+
+</table>
+
+<script>
+    $(document).ready(function () {
+        $('#btnCadastrar').on('click', function () {
+           window.location.assign('/application/index/cadastro-curso');
+        });
+
+        $('#btnLimpar').on('click', function () {
+           limparCampos();
+            if($.fn.dataTable.isDataTable('#tabelaConsulta')){
+                $('#tabelaConsulta').DataTable().destroy();
+                $('#tabelaConsulta').html("");
+            }
+        });
+
+        $('#btnConsultar').on('click', function () {
+
+            if($.fn.dataTable.isDataTable('#tabelaConsulta')){
+                $('#tabelaConsulta').DataTable().destroy();
+                $('#tabelaConsulta').html("");
+            }
+            $.ajax({
+                url: "listar-curso",
+                datatype: "JSON",
+                type: "POST",
+                data: {
+                    nmCurso: $.trim($('#nmCurso').val()),
+                    sgCurso: $.trim($('#sgCurso').val())
+                },
+                success: function (data) {
+                    var retorno = JSON.parse(data);
+
+                    if(!retorno.dados){
+                        console.log("sem dados");
+                        return false;
+                    }
+
+                    var dataSet = [];
+                    $.each(retorno.dados, function (index, data) {
+                        dataSet.push([
+                            data.nmCurso,
+                            data.sgCurso,
+                            data.nuCargaHorario,
+                            "<div class='form-group'>" +
+                            "<a class='btn btn-warning' href='/application/index/cadastro-curso?id="+data.idCurso+"'><span class='glyphicon glyphicon-pencil'></span></a> "+
+                            "&nbsp;"+
+                            "<button type='button' class='btn btn-danger' onclick='removerCurso("+data.idCurso+")' '><span class='glyphicon glyphicon-trash'></span></a>"+
+                            "</div>"
+                        ])
+                    });
+
+                    $('#tabelaConsulta').DataTable({
+                        language: {
+                            paginate: {
+                              previous: "Anterior",
+                                next: "Próximo"
+                            },
+                            emptyTable: "Nenhum registro encontrado !",
+                            info: "Mostrando _END_ de _MAX_ Registros",
+                            lengthMenu: 'Mostrar <select>'+
+                                            '<option value="10">10</option>'+
+                                            '<option value="15">15</option>'+
+                                            '<option value="20">20</option>'+
+                                            '<option value="30">30</option>'+
+                                        '</select> registros'
+                        },
+                        searching: false,
+                        data: dataSet,
+                        columns: [
+                            {title: 'Nome Curso'},
+                            {title: 'Sigla Curso'},
+                            {title: 'Carga Horária'},
+                            {title: 'Ações'}
+                        ]
+                    });
+                }
+            });
+        });
+
+        removerCurso = function (id) {
+            alert(id);
+//            $.ajax({
+//
+//            });
+        }
+    })
+</script>
