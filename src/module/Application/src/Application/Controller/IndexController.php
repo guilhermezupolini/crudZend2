@@ -99,11 +99,18 @@ class IndexController extends AbstractActionController
 
     public function removerCursoAction()
     {
-        $id = $this->params()->fromQuery("id");
+        $request = $this->getRequest();
+        $post = $request->getPost()->toArray();
+        $id = current($post);
 
-        var_dump($id);
+        try{
+            $cursoService = $this->getServiceLocator()->get("CursoService");
+            $cursoService->removerCurso($id);
 
-        $retorno = array();
+            $retorno = array('msg' => 'Curso removido com sucesso', 'status' => 'sucesso');
+        }catch(Exception $e){
+            $retorno = array('msg' => 'Curso não pode ser removido', 'status' => 'erro');
+        }
 
         return $this->getResponse()->setContent(json_encode($retorno));
     }
@@ -117,6 +124,8 @@ class IndexController extends AbstractActionController
 
         if($post['nmCurso'] != '') $criterios['nmCurso'] = $post['nmCurso'];
         if($post['sgCurso'] != '') $criterios['sgCurso'] = $post['sgCurso'];
+
+//        var_dump($criterios);exit;
 
         $dados = $criterios ? $cursoService->buscarCursos($criterios) : $cursoService->listarCursos();
 
@@ -132,6 +141,6 @@ class IndexController extends AbstractActionController
 
         $retorno = array('msg' => 'ajax retornado', 'dados' => $cursos);
 
-        return $this->getResponse()->setContent(json_encode($retorno));
+        return $this->getResponse()->setContent(json_encode($cursos));
     }
 }

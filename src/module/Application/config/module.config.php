@@ -18,7 +18,7 @@ return array(
                     'route'    => '/',
                     'defaults' => array(
                         'controller' => 'Application\Controller\Index',
-                        'action'     => 'index',
+                        'action'     => 'consultarCurso',
                     ),
                 ),
             ),

@@ -52,6 +52,13 @@ class CursoService
 
     public function buscarCursos($criterios){
         return $this->getRepository()->findBy($criterios);
+//        return $this->getRepository()->findByBuscarCursos();
+    }
+
+    public function removerCurso($id){
+        $entity = $this->getRepository()->findOneBy(array('idCurso' => $id));
+        $this->getEntityManager()->remove($entity);
+        $this->getEntityManager()->flush();
     }
 
     public function salvarCurso($data, $id = null){

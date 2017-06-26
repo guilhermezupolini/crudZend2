@@ -37,7 +37,14 @@ $form = $this->form;
 </fieldset>
 
 <table id="tabelaConsulta">
-
+    <thead>
+        <tr>
+            <th>Nome Curso</th>
+            <th>Sigla Curso</th>
+            <th>Carga horária</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
 </table>
 
 <script>
@@ -50,45 +57,45 @@ $form = $this->form;
            limparCampos();
             if($.fn.dataTable.isDataTable('#tabelaConsulta')){
                 $('#tabelaConsulta').DataTable().destroy();
-                $('#tabelaConsulta').html("");
+//                $('#tabelaConsulta').html("");
             }
         });
 
-        $('#btnConsultar').on('click', function () {
+    $('#btnConsultar').on('click', function () {
 
             if($.fn.dataTable.isDataTable('#tabelaConsulta')){
                 $('#tabelaConsulta').DataTable().destroy();
-                $('#tabelaConsulta').html("");
+//                $('#tabelaConsulta').html("");
             }
-            $.ajax({
-                url: "listar-curso",
-                datatype: "JSON",
-                type: "POST",
-                data: {
-                    nmCurso: $.trim($('#nmCurso').val()),
-                    sgCurso: $.trim($('#sgCurso').val())
-                },
-                success: function (data) {
-                    var retorno = JSON.parse(data);
-
-                    if(!retorno.dados){
-                        console.log("sem dados");
-                        return false;
-                    }
-
-                    var dataSet = [];
-                    $.each(retorno.dados, function (index, data) {
-                        dataSet.push([
-                            data.nmCurso,
-                            data.sgCurso,
-                            data.nuCargaHorario,
-                            "<div class='form-group'>" +
-                            "<a class='btn btn-warning' href='/application/index/cadastro-curso?id="+data.idCurso+"'><span class='glyphicon glyphicon-pencil'></span></a> "+
-                            "&nbsp;"+
-                            "<button type='button' class='btn btn-danger' onclick='removerCurso("+data.idCurso+")' '><span class='glyphicon glyphicon-trash'></span></a>"+
-                            "</div>"
-                        ])
-                    });
+//            $.ajax({
+//                url: "listar-curso",
+//                datatype: "JSON",
+//                type: "POST",
+//                data: {
+//                    nmCurso: $.trim($('#nmCurso').val()),
+//                    sgCurso: $.trim($('#sgCurso').val())
+//                },
+//                success: function (data) {
+//                    var retorno = JSON.parse(data);
+//
+//                    if(!retorno.dados){
+//                        console.log("sem dados");
+//                        return false;
+//                    }
+//
+//                    var dataSet = [];
+//                    $.each(retorno.dados, function (index, data) {
+//                        dataSet.push([
+//                            data.nmCurso,
+//                            data.sgCurso,
+//                            data.nuCargaHorario,
+//                            "<div class='form-group'>" +
+//                            "<a class='btn btn-warning' href='/application/index/cadastro-curso?id="+data.idCurso+"'><span class='glyphicon glyphicon-pencil'></span></a> "+
+//                            "&nbsp;"+
+//                            "<button type='button' class='btn btn-danger' onclick='removerCurso("+data.idCurso+", $(this))' '><span class='glyphicon glyphicon-trash'></span></a>"+
+//                            "</div>"
+//                        ])
+//                    });
 
                     $('#tabelaConsulta').DataTable({
                         language: {
@@ -98,6 +105,7 @@ $form = $this->form;
                             },
                             emptyTable: "Nenhum registro encontrado !",
                             info: "Mostrando _END_ de _MAX_ Registros",
+                            loadingRecords: "Carregando...",
                             lengthMenu: 'Mostrar <select>'+
                                             '<option value="10">10</option>'+
                                             '<option value="15">15</option>'+
@@ -106,23 +114,48 @@ $form = $this->form;
                                         '</select> registros'
                         },
                         searching: false,
-                        data: dataSet,
+                        ajax: {
+                            url: "listar-curso",
+                            datatype: "JSON",
+                            type: "POST",
+                            data: {
+                                nmCurso: $.trim($('#nmCurso').val()),
+                                sgCurso: $.trim($('#sgCurso').val())
+                            },
+                            dataSrc: ''
+                        },
                         columns: [
-                            {title: 'Nome Curso'},
-                            {title: 'Sigla Curso'},
-                            {title: 'Carga Horária'},
-                            {title: 'Ações'}
+                            {data: "nmCurso"},
+                            {data: "sgCurso"},
+                            {data: "nuCargaHorario"},
+                            {data: function () {
+                                return '<button type="button" class="btn btn-danger" onclick="alert(\'\')"><span class="glyphicon glyphicon-trash"></span></button>'
+                            }}
                         ]
                     });
-                }
-            });
+
+//            });
         });
 
-        removerCurso = function (id) {
-            alert(id);
-//            $.ajax({
-//
-//            });
+        removerCurso = function (id, row) {
+//            alert(row.parents('tr').prop("tagName"));
+            var remove = confirm("Deseja realmente remover esse curso? Essa ação não pode ser desfeita");
+            if(remove){
+
+                $.ajax({
+                    url: 'remover-curso',
+//                    datatype: 'JSON',
+                    type: 'POST',
+                    data: {id: id},
+                    success: function (data) {
+                        var retorno = JSON.parse(data);
+                        carregarTabela();
+                        console.log(retorno);
+                        alertMessage(retorno.msg, retorno.status, "#alertMsg");
+
+                    }
+                });
+            }
         }
     })
 </script>
