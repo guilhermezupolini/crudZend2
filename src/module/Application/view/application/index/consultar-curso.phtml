@@ -36,7 +36,7 @@ $form = $this->form;
     <?php echo $this->form()->closeTag();?>
 </fieldset>
 
-<table id="tabelaConsulta">
+<table id="tabelaConsulta" style="display: none;">
     <thead>
         <tr>
             <th>Nome Curso</th>
@@ -57,45 +57,16 @@ $form = $this->form;
            limparCampos();
             if($.fn.dataTable.isDataTable('#tabelaConsulta')){
                 $('#tabelaConsulta').DataTable().destroy();
-//                $('#tabelaConsulta').html("");
+                $('#tabelaConsulta').hide();
+                $('#tabelaConsulta tbody').html("");
             }
         });
 
     $('#btnConsultar').on('click', function () {
-
+        $('#tabelaConsulta').show();
             if($.fn.dataTable.isDataTable('#tabelaConsulta')){
                 $('#tabelaConsulta').DataTable().destroy();
-//                $('#tabelaConsulta').html("");
             }
-//            $.ajax({
-//                url: "listar-curso",
-//                datatype: "JSON",
-//                type: "POST",
-//                data: {
-//                    nmCurso: $.trim($('#nmCurso').val()),
-//                    sgCurso: $.trim($('#sgCurso').val())
-//                },
-//                success: function (data) {
-//                    var retorno = JSON.parse(data);
-//
-//                    if(!retorno.dados){
-//                        console.log("sem dados");
-//                        return false;
-//                    }
-//
-//                    var dataSet = [];
-//                    $.each(retorno.dados, function (index, data) {
-//                        dataSet.push([
-//                            data.nmCurso,
-//                            data.sgCurso,
-//                            data.nuCargaHorario,
-//                            "<div class='form-group'>" +
-//                            "<a class='btn btn-warning' href='/application/index/cadastro-curso?id="+data.idCurso+"'><span class='glyphicon glyphicon-pencil'></span></a> "+
-//                            "&nbsp;"+
-//                            "<button type='button' class='btn btn-danger' onclick='removerCurso("+data.idCurso+", $(this))' '><span class='glyphicon glyphicon-trash'></span></a>"+
-//                            "</div>"
-//                        ])
-//                    });
 
                     $('#tabelaConsulta').DataTable({
                         language: {
@@ -115,7 +86,7 @@ $form = $this->form;
                         },
                         searching: false,
                         ajax: {
-                            url: "listar-curso",
+                            url: "/application/index/listar-curso",
                             datatype: "JSON",
                             type: "POST",
                             data: {
@@ -128,9 +99,7 @@ $form = $this->form;
                             {data: "nmCurso"},
                             {data: "sgCurso"},
                             {data: "nuCargaHorario"},
-                            {data: function () {
-                                return '<button type="button" class="btn btn-danger" onclick="alert(\'\')"><span class="glyphicon glyphicon-trash"></span></button>'
-                            }}
+                            {data: "acoes"}
                         ]
                     });
 
@@ -138,19 +107,22 @@ $form = $this->form;
         });
 
         removerCurso = function (id, row) {
-//            alert(row.parents('tr').prop("tagName"));
+//            alert(row);
+
             var remove = confirm("Deseja realmente remover esse curso? Essa ação não pode ser desfeita");
+
             if(remove){
 
                 $.ajax({
-                    url: 'remover-curso',
-//                    datatype: 'JSON',
+                    url: '/application/index/remover-curso',
+                    datatype: 'JSON',
                     type: 'POST',
                     data: {id: id},
                     success: function (data) {
                         var retorno = JSON.parse(data);
-                        carregarTabela();
+                        $('#tabelaConsulta').DataTable().row(row.parents('tr')).remove().draw();
                         console.log(retorno);
+                        voltarTopo();
                         alertMessage(retorno.msg, retorno.status, "#alertMsg");
 
                     }

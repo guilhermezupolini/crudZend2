@@ -125,21 +125,23 @@ class IndexController extends AbstractActionController
         if($post['nmCurso'] != '') $criterios['nmCurso'] = $post['nmCurso'];
         if($post['sgCurso'] != '') $criterios['sgCurso'] = $post['sgCurso'];
 
-//        var_dump($criterios);exit;
-
         $dados = $criterios ? $cursoService->buscarCursos($criterios) : $cursoService->listarCursos();
-
-//        var_dump($dados);exit;
 
         $hydrator = new ClassMethods(false);
 
         $cursos = array();
 
         foreach ($dados as $dado) {
-            $cursos[] = $hydrator->extract($dado);
+            $curso = $hydrator->extract($dado);
+            $link = "/application/index/cadastro-curso?id=".$curso['idCurso'];
+            $curso['acoes'] =
+            "<button class='btn btn-link' onclick='removerCurso(".$curso['idCurso'].",$(this));'><span class='glyphicon glyphicon-trash'></span></button>".
+            "<button class='btn btn-link' onclick='window.location.assign(\"".$link."\")'><span class='glyphicon glyphicon-pencil'></span></button>";
+            $cursos[] = $curso;
+//            var_dump($cursos);
         }
 
-        $retorno = array('msg' => 'ajax retornado', 'dados' => $cursos);
+//       /* var_dump($cursos)*/;exit;
 
         return $this->getResponse()->setContent(json_encode($cursos));
     }
